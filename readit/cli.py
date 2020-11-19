@@ -60,8 +60,16 @@ def main(
         for url_to_add in add:
             url = url_to_add
             try:
-                validate_url = requests.get(url)
-                validate_code = validate_url.status_code
+                if (url.startswith(("http://", "https://"))):
+                    validate_code = requests.get(url).status_code
+                elif requests.get("http://" + url).status_code == 200:
+                    validate_code = 200
+                    url = "http://" + url
+                elif requests.get("https://" + url).status_code == 200:
+                    validate_code = 200
+                    url = "https://" + url
+                else:
+                    validate_code = 0
                 if validate_code == 200:
                     is_url_added = database_connection.add_url(url)
                     if is_url_added:
@@ -103,8 +111,16 @@ def main(
         url_id = url_list[0]
         url = url_list[1]
         try:
-            validate_url = requests.get(url)
-            validate_code = validate_url.status_code
+            if (url.startswith(("http://", "https://"))):
+                validate_code = requests.get(url).status_code
+            elif requests.get("http://"+url).status_code == 200:
+                validate_code = 200
+                url = "http://" + url
+            elif requests.get("https://"+url).status_code == 200:
+                validate_code = 200
+                url = "https://" + url
+            else:
+                validate_code = 0
             if validate_code == 200:
                 is_url_updated = database_connection.update_url(url_id, url)
                 if is_url_updated:
@@ -200,8 +216,16 @@ def main(
         for url_to_add in insert:
             url = url_to_add
             try:
-                validate_url = requests.get(url)
-                validate_code = validate_url.status_code
+                if (url.startswith(("http://", "https://"))):
+                    validate_code = requests.get(url).status_code
+                elif requests.get("http://"+url).status_code == 200:
+                    validate_code = 200
+                    url = "http://" + url
+                elif requests.get("https://"+url).status_code == 200:
+                    validate_code = 200
+                    url = "https://" + url
+                else:
+                    validate_code = 0
                 if validate_code == 200:
                     is_url_added = database_connection.add_url(url)
                     if is_url_added:
@@ -231,8 +255,6 @@ def main(
                         print(
                             "URL is already bookmarked. Check URL information. See help"
                         )
-
-
 def option_yes_no():
     """
     Asks whether to bookmark invalid URLs or Offline URLs to database.
